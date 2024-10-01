@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <fstream>
 #include <string>
 class Subject
 {
@@ -11,6 +12,9 @@ public:
 	Subject();
 	Subject(std::string uslable);
 	Subject(std::string uslable, std::string name);
+	virtual std::string get_type() const = 0;
+	virtual void introduction(std::ofstream& ofs) const = 0;
+	virtual void extraction(std::ifstream& ifs) const = 0;
 	virtual void show_item() const = 0;
 	std::string get_uslable() const { return this->uslable; }
 	std::string get_name() const { return this->name; }

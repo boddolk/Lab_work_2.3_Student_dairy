@@ -15,7 +15,17 @@ Sched_path::Sched_path(std::string uslable, std::string name, int day, int seque
 {
 }
 
+void Sched_path::extraction(std::ifstream& ifs)
+{
+	std::getline(ifs, uslable);
+	std::getline(ifs, name);
+	ifs >> day;
+	ifs.ignore();
+	ifs >> sequence;
+	ifs.ignore();
+}
+
 void Sched_path::show_item() const
 {
-	std::cout << " / " << get_name() << " /\n";
+	std::cout << " - " << get_sequence() << ".  / " << get_name() << " /\n";
 }

@@ -15,6 +15,14 @@ Res_path::Res_path(std::string uslable, std::string name, int score)
 {
 }
 
+void Res_path::extraction(std::ifstream& ifs)
+{
+	std::getline(ifs, uslable);
+	std::getline(ifs, name);
+	ifs >> score;
+	ifs.ignore();
+}
+
 void Res_path::show_item() const
 {
 	std::cout << " Subject:  < " << get_name() << " >,    Score:  / " << get_score() << " /\n\n";

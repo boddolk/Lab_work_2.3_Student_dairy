@@ -127,7 +127,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="file_operate.cpp" />
     <ClCompile Include="Goal.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Note.cpp" />
@@ -138,7 +137,6 @@
     <ClCompile Include="Subject.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="file_operate.h" />
     <ClInclude Include="Goal.h" />
     <ClInclude Include="Note.h" />
     <ClInclude Include="Record.h" />

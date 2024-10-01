@@ -51,9 +51,6 @@
     <ClCompile Include="Student_dairy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="file_operate.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Subject.h">
@@ -75,9 +72,6 @@
       <Filter>Header Files\Rec</Filter>
     </ClInclude>
     <ClInclude Include="Student_dairy.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="file_operate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

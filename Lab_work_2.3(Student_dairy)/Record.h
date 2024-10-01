@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <fstream>
 #include <string>
 class Record
 {
@@ -12,6 +13,9 @@ public:
 	Record();
 	Record(std::string uslable);
 	Record(std::string uslable, std::string name, std::string date, std::string info);
+	virtual std::string get_type() const = 0;
+	virtual void introduction(std::ofstream& ofs) const = 0;
+	virtual void extraction(std::ifstream& ifs) const = 0;
 	virtual void show_item() const = 0;
 	std::string get_uslable() const { return this->uslable; }
 	std::string get_name() const { return this->name; }

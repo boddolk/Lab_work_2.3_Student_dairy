@@ -15,6 +15,16 @@ Goal::Goal(std::string uslable, std::string name, std::string date, std::string 
 {
 }
 
+void Goal::extraction(std::ifstream& ifs)
+{
+	std::getline(ifs, uslable);
+	std::getline(ifs, name);
+	std::getline(ifs, date);
+	std::getline(ifs, info);
+	ifs >> status;
+	ifs.ignore();
+}
+
 void Goal::show_item() const
 {
 	std::cout << "< " << get_date() << " >   --   <<< ";
