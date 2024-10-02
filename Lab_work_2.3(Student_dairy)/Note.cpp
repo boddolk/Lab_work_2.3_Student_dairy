@@ -1,23 +1,17 @@
 #include "Note.h"
 
 Note::Note()
-	:Record{ "note_lable" }
+	:Record{}
 {
 }
 
-Note::Note(std::string uslable)
-	:Record(uslable)
-{
-}
-
-Note::Note(std::string uslable, std::string name, std::string date, std::string info)
-	:Record(uslable, name, date, info)
+Note::Note(std::string name, std::string date, std::string info)
+	:Record(name, date, info)
 {
 }
 
 void Note::extraction(std::ifstream& ifs)
 {
-	std::getline(ifs, uslable);
 	std::getline(ifs, name);
 	std::getline(ifs, date);
 	std::getline(ifs, info);

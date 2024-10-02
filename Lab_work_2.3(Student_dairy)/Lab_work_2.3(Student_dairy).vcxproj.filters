@@ -51,6 +51,9 @@
     <ClCompile Include="Student_dairy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="menu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Subject.h">
@@ -72,6 +75,12 @@
       <Filter>Header Files\Rec</Filter>
     </ClInclude>
     <ClInclude Include="Student_dairy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="menu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="functors.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

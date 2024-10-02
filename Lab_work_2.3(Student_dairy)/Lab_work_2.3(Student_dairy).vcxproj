@@ -129,6 +129,7 @@
   <ItemGroup>
     <ClCompile Include="Goal.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="menu.cpp" />
     <ClCompile Include="Note.cpp" />
     <ClCompile Include="Record.cpp" />
     <ClCompile Include="Res_path.cpp" />
@@ -137,7 +138,9 @@
     <ClCompile Include="Subject.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="functors.h" />
     <ClInclude Include="Goal.h" />
+    <ClInclude Include="menu.h" />
     <ClInclude Include="Note.h" />
     <ClInclude Include="Record.h" />
     <ClInclude Include="Res_path.h" />

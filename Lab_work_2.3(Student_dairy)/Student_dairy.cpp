@@ -1,19 +1,19 @@
 #include "Student_dairy.h"
 
 Student_dairy::Student_dairy()
-	:Sub_file{ "Subject_file" }, Rec_file{ "Record_file"}
+	:Res_file{ "Result_file" }, Sched_file{ "Schedule_file" }, Rec_file{ "Record_file"}
 
 {
 }
 
-Student_dairy::Student_dairy(std::string Sub_file, std::string Rec_file)
-	:Sub_file(Sub_file), Rec_file(Rec_file)
+Student_dairy::Student_dairy(std::string Res_file, std::string Sched_file, std::string Rec_file)
+	:Res_file(Res_file), Sched_file(Sched_file), Rec_file(Rec_file)
 {
 }
 
 void Student_dairy::show_schedule(int day) const
 {
-    if (day > 0 && day < 6 && !sub_items.empty())
+    if (day > 0 && day < 6 && !schedule.empty())
     {
         switch (day)
         {
@@ -36,16 +36,11 @@ void Student_dairy::show_schedule(int day) const
 
         for (int i = 1; i < 5; i++)
         {
-            for (const auto& item : this->sub_items)
+            for (const auto& item : this->schedule)
             {
-                if (item->get_type() == "schedule_t")
+                if (item.get_day() == day && item.get_sequence() == i) // іншааа
                 {
-                    auto sched = std::dynamic_pointer_cast<Sched_path>(item);
-                    if (sched->get_day() == day && sched->get_sequence() == i)
-                    {
-                        item->show_item();
-                    }
-                // Sched_path temp;// переробити цю залупу ???????????????????????????????????????????????????
+                    item.show_item();
                 }
             }
         }
@@ -55,12 +50,11 @@ void Student_dairy::show_schedule(int day) const
 
 void Student_dairy::show_results() const
 {
-    if (!sub_items.empty())
+    if (!results.empty())
     {
-        for (const auto& item : this->records)
+        for (const auto& item : this->results)
         {
-            if (item->get_type() == "result_t")
-                item->show_item();
+            item.show_item();
         }
     }
 }
@@ -95,64 +89,197 @@ void Student_dairy::add_record(std::shared_ptr<Record> item)
         records.push_back(item);
 }
 
-void Student_dairy::add_sub_item(std::shared_ptr<Subject> item)
+void Student_dairy::add_sched_item(const Sched_path& item)
 {
-    if (item != nullptr)
-        sub_items.push_back(item);
+    this->schedule.push_back(item);
 }
+
+void Student_dairy::add_res_item(const Res_path& item)
+{
+    this->results.push_back(item);
+}
+
+void Student_dairy::rm_note(std::string name, std::string date)
+{
+    if (!records.empty())
+    {
+        std::vector<std::shared_ptr<Record>>::iterator it = std::find(records.begin(), records.end(), S_for_Note(name, date));
+        if (it == records.end())
+        {
+            records.erase(it);
+        }
+    }
+}
+
+void Student_dairy::rm_goal(std::string name, std::string date, int status)
+{
+    std::vector<std::shared_ptr<Record>>::iterator it = std::find(records.begin(), records.end(), S_for_Goal(name, date, status));
+    if (it == records.end())
+    {
+        records.erase(it);
+    }
+}
+
+void Student_dairy::rm_sched_item(int day, int sequence)
+{
+    std::vector<Sched_path>::iterator it = std::find(schedule.begin(), schedule.end(), S_for_Sched(day, sequence));
+    if (it == schedule.end())
+    {
+        schedule.erase(it);
+    }
+}
+
+void Student_dairy::rm_res_item(std::string name)
+{
+    std::vector<Res_path>::iterator it = std::find(results.begin(), results.end(), S_for_Res(name));
+    if (it == results.end())
+    {
+        results.erase(it);
+    }
+}
+
+void Student_dairy::ed_note(std::string name, std::string date, std::string new_info)
+{
+    if (!records.empty())
+    {
+        std::vector<std::shared_ptr<Record>>::iterator it = std::find(records.begin(), records.end(), S_for_Note(name, date));
+        if (it == records.end())
+        {
+            if (auto No = std::dynamic_pointer_cast<Note>(*it))
+            {
+                No->set_info(new_info);
+            } else throw - 1;
+        }
+    }
+}
+
+void Student_dairy::ed_goal(std::string name, std::string date, int status, std::string new_info)
+{
+    if (!records.empty())
+    {
+        std::vector<std::shared_ptr<Record>>::iterator it = std::find(records.begin(), records.end(), S_for_Goal(name, date, status));
+        if (it == records.end())
+        {
+            if (auto Go = std::dynamic_pointer_cast<Goal>(*it))
+            {
+                Go->set_info(new_info);
+            }
+            else throw - 1;
+        }
+    }
+}
+
+void Student_dairy::ed_sched_item(int day, int sequence, std::string new_name)
+{
+    if (!sub_records.empty())
+    {
+        std::vector<std::shared_ptr<Subject>>::iterator it = std::find(sub_records.begin(), sub_records.end(), S_for_Sched(day, sequence));
+        if (it == sub_records.end())
+        {
+            if (auto Sch = std::dynamic_pointer_cast<Sched_path>(*it))
+            {
+                Sch->set_name(new_name);
+            }
+            else throw - 1;
+        }
+    }
+}
+
+void Student_dairy::ed_res_item(std::string name, int new_result)
+{
+    if (!sub_records.empty())
+    {
+        std::vector<std::shared_ptr<Subject>>::iterator it = std::find(sub_records.begin(), sub_records.end(), S_for_Res(name));
+        if (it == sub_records.end())
+        {
+            if (auto Re = std::dynamic_pointer_cast<Res_path>(*it))
+            {
+                Re->set_score(new_result);
+            }
+            else throw - 1;
+        }
+    }
+}
+
+
 
 void Student_dairy::full_clear()
 {
-    if (!records.empty())
+    /*if (!records.empty())
         records.clear();
-    if (!sub_items.empty())
-        sub_items.clear();
+    if (!results.empty())
+        results.clear();
+    if (!schedule.empty())
+        results.clear();*/
 
     // зачистити файли
 }
 
-bool Student_dairy::write_to_file(std::string file_name) const
+bool Student_dairy::write_records_file() const
 {
-	std::ofstream ofs(file_name);
-	if (!ofs) 
+    std::ofstream ofs(Rec_file);
+    if (!ofs)
     {
-		std::cerr << "Error opening file for writing!" << std::endl;
-		return;
-	}
-
-	if (file_name == this->get_sub_name())
-	{
-		for (const auto& item : this->sub_items) 
+        std::cerr << "Error opening file for writing!" << std::endl;
+        throw - 1;
+    }
+    if (!records.empty())
+    {
+        for (const auto& item : this->records)
         {
-			ofs << item->get_type() << '\n'; // Спочатку записуємо тип об'єкта
-			item->introduction(ofs);
-		}
-	}
-	if (file_name == this->get_rec_name())
-	{
-		for (const auto& item : this->records) 
-        {
-			ofs << item->get_type() << '\n'; // Спочатку записуємо тип об'єкта
-			item->introduction(ofs);
-		}
-	}
+            ofs << item->get_type() << '\n'; // Спочатку записуємо тип об'єкта
+            item->introduction(ofs);
+        }
+    }
 
-	return false;
+    return true;
 }
 
-bool Student_dairy::execute_from_files()
+bool Student_dairy::write_schedule_file() const
+{
+    std::ofstream ofs(Sched_file);
+    if (!ofs)
+    {
+        std::cerr << "Error opening file for writing!" << std::endl;
+        throw - 1;
+    }
+    if (!schedule.empty())
+    {
+        for (const auto& item : this->schedule)
+        {
+            item.introduction(ofs);
+        }
+    }
+
+    return true;
+}
+
+bool Student_dairy::write_results_file() const
+{
+    std::ofstream ofs(Res_file);
+    if (!ofs)
+    {
+        std::cerr << "Error opening file for writing!" << std::endl;
+        throw - 1;
+    }
+    if (!results.empty())
+    {
+        for (const auto& item : this->results)
+        {
+            item.introduction(ofs);
+        }
+    }
+
+    return true;
+}
+
+bool Student_dairy::execute_records_file()
 {
     std::ifstream ifs_rec(this->Rec_file);
-    if (!ifs_rec) 
+    if (!ifs_rec)
     {
         std::cerr << "Error opening records file for writing!" << std::endl;
-        return;
-    }
-    std::ifstream ifs_sub(this->Sub_file);
-    if (!ifs_sub)
-    {
-        std::cerr << "Error opening subjects file for writing!" << std::endl;
-        return;
+        throw - 1;
     }
 
     std::string type;
@@ -160,28 +287,50 @@ bool Student_dairy::execute_from_files()
     {
         std::shared_ptr<Record> item1;
         if (type == "note_t") { item1 = std::make_shared<Note>(); }
-        else if (type == "goal_t") { item1 = std::make_shared<Goal>(); } 
-        
-        if (item1) 
+        else if (type == "goal_t") { item1 = std::make_shared<Goal>(); }
+
+        if (item1)
         {
             item1->extraction(ifs_rec);
             records.push_back(item1);
         }
-
     }
 
-    while (std::getline(ifs_sub, type))
+    return true;
+}
+
+bool Student_dairy::execute_schedule_file()
+{
+    std::ifstream ifs_sched(this->Sched_file);
+    if (!ifs_sched)
     {
-        std::shared_ptr<Subject> item2;
-        if (type == "schedule_t") { item2 = std::make_shared<Sched_path>(); }
-        else if (type == "result_t") { item2 = std::make_shared<Res_path>(); }
-
-        if (item2)
-        {
-            item2->extraction(ifs_sub);
-            sub_items.push_back(item2);
-        }
+        std::cerr << "Error opening schedule file for writing!" << std::endl;
+        throw - 1;
+    }
+    while (ifs_sched)
+    {
+        Sched_path item2;
+        item2.extraction(ifs_sched);
+        schedule.push_back(item2);
     }
 
-	return false;
+    return true;
+}
+
+bool Student_dairy::execute_results_file()
+{
+    std::ifstream ifs_res(this->Res_file);
+    if (!ifs_res)
+    {
+        std::cerr << "Error opening results file for writing!" << std::endl;
+        throw - 1;
+    }
+    while (ifs_res)
+    {
+        Res_path item3;
+        item3.extraction(ifs_res);
+        results.push_back(item3);
+    }
+
+    return true;
 }
