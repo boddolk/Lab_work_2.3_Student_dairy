@@ -2,13 +2,11 @@
 
 Goal::Goal()
 	:Record{}, status(0)
-{
-}
+{}
 
 Goal::Goal(std::string name, std::string date, std::string info, int status)
 	:Record(name, date, info), status(status == 0 || status == 1 ? status : 0)
-{
-}
+{}
 
 void Goal::extraction(std::ifstream& ifs)
 {
@@ -28,5 +26,4 @@ void Goal::show_item() const
 		std::cout << "COMPLETED >>>\n";
 	std::cout << " / " << get_name() << " /\n";
 	std::cout << " << " << get_info() << " >>\n\n";
-
 }

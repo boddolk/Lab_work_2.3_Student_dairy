@@ -2,13 +2,11 @@
 
 Res_path::Res_path()
 	: Subject(), score(0)
-{
-}
+{}
 
 Res_path::Res_path(std::string name, int score)
-	: Subject(name), score(score)
-{
-}
+	: Subject(name), score((score >= 0 && score <= 100 ? score : 0))
+{}
 
 void Res_path::extraction(std::ifstream& ifs)
 {

@@ -5,7 +5,6 @@ class Goal : public Record
 {
 protected:
 	int status;
-
 public:
 	Goal();
 	Goal(std::string name, std::string date, std::string info, int status);
@@ -16,4 +15,3 @@ public:
 	int get_status() const { return this->status; }
 	void set_status(int status) { this->status = status; }
 };
-

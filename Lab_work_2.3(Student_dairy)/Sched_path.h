@@ -6,7 +6,6 @@ class Sched_path : public Subject
 protected:
 	int day;
 	int sequence;
-
 public:
 	Sched_path();
 	Sched_path(std::string name, int day, int sequence);

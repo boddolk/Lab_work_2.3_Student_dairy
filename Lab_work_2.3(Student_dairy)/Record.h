@@ -23,4 +23,3 @@ public:
 	void set_date(std::string date) { this->date = date; }
 	void set_info(std::string info) { this->info = info; }
 };
-

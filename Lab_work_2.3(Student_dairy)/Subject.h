@@ -7,7 +7,6 @@ class Subject
 {
 protected:
 	std::string name;
-
 public:
 	Subject();
 	Subject(std::string name);
@@ -18,4 +17,3 @@ public:
 	std::string get_name() const { return this->name; }
 	void set_name(std::string name) { this->name = name; }
 };
-

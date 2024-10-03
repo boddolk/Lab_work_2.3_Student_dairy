@@ -5,7 +5,6 @@ class Res_path : public Subject
 {
 protected:
 	int score;
-
 public:
 	Res_path();
 	Res_path(std::string name, int score);
@@ -16,4 +15,3 @@ public:
 	int get_score() const { return this->score; }
 	void set_score(int score) { this->score = score; }
 };
-

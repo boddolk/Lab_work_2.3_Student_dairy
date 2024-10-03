@@ -1,336 +1,320 @@
 #include "Student_dairy.h"
 
 Student_dairy::Student_dairy()
-	:Res_file{ "Result_file" }, Sched_file{ "Schedule_file" }, Rec_file{ "Record_file"}
+	:Rec_file{ "Student_dairy_file" }
+{}
 
+Student_dairy::Student_dairy(std::string Res_file)
+	:Rec_file(Res_file)
+{}
+// ¬»¬Œƒ»
+bool Student_dairy::show_schedule(int day) const
 {
-}
-
-Student_dairy::Student_dairy(std::string Res_file, std::string Sched_file, std::string Rec_file)
-	:Res_file(Res_file), Sched_file(Sched_file), Rec_file(Rec_file)
-{
-}
-
-void Student_dairy::show_schedule(int day) const
-{
-    if (day > 0 && day < 6 && !schedule.empty())
+    bool n = false;
+    if (day > 0 && day < 6 && !sub_records.empty())
     {
         switch (day)
         {
-        case 1:
-            std::cout << " <<      Monday      >>\n\n";
+        case 1: std::cout << "\n <<      Monday      >>\n\n";
             break;
-        case 2:
-            std::cout << " <<      Tuesday      >>\n\n";
+        case 2: std::cout << "\n <<      Tuesday      >>\n\n";
             break;
-        case 3:
-            std::cout << " <<      Wednesday      >>\n\n";
+        case 3: std::cout << "\n <<      Wednesday      >>\n\n";
             break;
-        case 4:
-            std::cout << " <<      Thursday      >>\n\n";
+        case 4: std::cout << "\n <<      Thursday      >>\n\n";
             break;
-        case 5:
-            std::cout << " <<      Friday      >>\n\n";
+        case 5: std::cout << "\n <<      Friday      >>\n\n";
             break;
         }
 
-        for (int i = 1; i < 5; i++)
+        for (int i = 1; i <= 7; i++)
         {
-            for (const auto& item : this->schedule)
+            for (const auto& item : this->sub_records)
             {
-                if (item.get_day() == day && item.get_sequence() == i) // ≥Ì¯‡‡‡
+                if (item->get_type() == "schedule_t")
                 {
-                    item.show_item();
+                    auto Sche = std::dynamic_pointer_cast<Sched_path>(item);
+                    if (Sche->get_day() == day && Sche->get_sequence() == i)
+                    {
+                        n = true;
+                        Sche->show_item();
+                    }
                 }
             }
         }
     }
-    else throw - 1;
+    return n;
 }
 
-void Student_dairy::show_results() const
+bool Student_dairy::show_results() const
 {
-    if (!results.empty())
+    bool n = false;
+    if (!sub_records.empty())
     {
-        for (const auto& item : this->results)
+        for (const auto& item : this->sub_records)
         {
-            item.show_item();
+            if (item->get_type() == "result_t")
+            {
+                n = true;
+                item->show_item();
+            }
         }
     }
+    return n;
 }
 
-void Student_dairy::show_notes() const
+bool Student_dairy::show_notes() const
 {
+    bool n = false;
     if (!records.empty())
     {
         for (const auto& item : this->records)
         {
             if (item->get_type() == "note_t")
+            {
                 item->show_item();
+                n = true;
+            }
         }
     }
+    return n;
 }
 
-void Student_dairy::show_goals() const
+bool Student_dairy::show_goals() const
 {
+    bool n = false;
     if (!records.empty())
     {
         for (const auto& item : this->records)
         {
             if (item->get_type() == "goal_t")
+            {
                 item->show_item();
+                n = true;
+            }
         }
     }
+    return n;
 }
-
+// ƒŒƒ¿¬¿ÕÕﬂ
 void Student_dairy::add_record(std::shared_ptr<Record> item)
 {
     if (item != nullptr)
-        records.push_back(item);
+    {
+        if (std::find(records.begin(), records.end(), item) == records.end())
+            records.push_back(item);
+    }
 }
 
-void Student_dairy::add_sched_item(const Sched_path& item)
+void Student_dairy::add_sub_record(std::shared_ptr<Subject> item)
 {
-    this->schedule.push_back(item);
+    if (item != nullptr)
+    {
+        if (std::find(sub_records.begin(), sub_records.end(), item) == sub_records.end())
+            sub_records.push_back(item);
+    }
 }
-
-void Student_dairy::add_res_item(const Res_path& item)
-{
-    this->results.push_back(item);
-}
-
-void Student_dairy::rm_note(std::string name, std::string date)
+// ¬»ƒ¿À≈ÕÕﬂ
+bool Student_dairy::rm_note(std::string name, std::string date)
 {
     if (!records.empty())
     {
-        std::vector<std::shared_ptr<Record>>::iterator it = std::find(records.begin(), records.end(), S_for_Note(name, date));
-        if (it == records.end())
+        std::vector<std::shared_ptr<Record>>::iterator it = std::find_if(records.begin(), records.end(), S_for_Note(name, date));
+        if (it != records.end())
         {
             records.erase(it);
+            return true;
         }
     }
+    return false;
 }
 
-void Student_dairy::rm_goal(std::string name, std::string date, int status)
-{
-    std::vector<std::shared_ptr<Record>>::iterator it = std::find(records.begin(), records.end(), S_for_Goal(name, date, status));
-    if (it == records.end())
-    {
-        records.erase(it);
-    }
-}
-
-void Student_dairy::rm_sched_item(int day, int sequence)
-{
-    std::vector<Sched_path>::iterator it = std::find(schedule.begin(), schedule.end(), S_for_Sched(day, sequence));
-    if (it == schedule.end())
-    {
-        schedule.erase(it);
-    }
-}
-
-void Student_dairy::rm_res_item(std::string name)
-{
-    std::vector<Res_path>::iterator it = std::find(results.begin(), results.end(), S_for_Res(name));
-    if (it == results.end())
-    {
-        results.erase(it);
-    }
-}
-
-void Student_dairy::ed_note(std::string name, std::string date, std::string new_info)
+bool Student_dairy::rm_goal(std::string name, std::string date, int status)
 {
     if (!records.empty())
     {
-        std::vector<std::shared_ptr<Record>>::iterator it = std::find(records.begin(), records.end(), S_for_Note(name, date));
-        if (it == records.end())
+        std::vector<std::shared_ptr<Record>>::iterator it = std::find_if(records.begin(), records.end(), S_for_Goal(name, date, status));
+        if (it != records.end())
         {
-            if (auto No = std::dynamic_pointer_cast<Note>(*it))
-            {
-                No->set_info(new_info);
-            } else throw - 1;
+            records.erase(it);
+            return true;
         }
     }
+    return false;
 }
 
-void Student_dairy::ed_goal(std::string name, std::string date, int status, std::string new_info)
+bool Student_dairy::rm_sched_item(int day, int sequence)
+{
+    if (!sub_records.empty())
+    {
+        std::vector<std::shared_ptr<Subject>>::iterator it = std::find_if(sub_records.begin(), sub_records.end(), S_for_Sched(day, sequence));
+        if (it != sub_records.end())
+        {
+            sub_records.erase(it);
+            return true;
+        }
+    }
+    return false;
+}
+
+bool Student_dairy::rm_res_item(std::string name)
+{
+    if (!sub_records.empty())
+    {
+        std::vector<std::shared_ptr<Subject>>::iterator it = std::find_if(sub_records.begin(), sub_records.end(), S_for_Res(name));
+        if (it != sub_records.end())
+        {
+            sub_records.erase(it);
+            return true;
+        }
+    }
+    return false;
+}
+// –≈ƒ¿√”¬¿ÕÕﬂ
+bool Student_dairy::ed_note(std::string name, std::string date, std::string new_info)
 {
     if (!records.empty())
     {
-        std::vector<std::shared_ptr<Record>>::iterator it = std::find(records.begin(), records.end(), S_for_Goal(name, date, status));
-        if (it == records.end())
+        std::vector<std::shared_ptr<Record>>::iterator it = std::find_if(records.begin(), records.end(), S_for_Note(name, date));
+        if (it != records.end())
         {
-            if (auto Go = std::dynamic_pointer_cast<Goal>(*it))
-            {
-                Go->set_info(new_info);
-            }
-            else throw - 1;
+            auto No = std::dynamic_pointer_cast<Note>(*it);
+            No->set_info(new_info);
+            return true;
         }
     }
+    return false;
 }
 
-void Student_dairy::ed_sched_item(int day, int sequence, std::string new_name)
+bool Student_dairy::ed_goal(std::string name, std::string date, int status)
+{
+    if (!records.empty())
+    {
+        std::vector<std::shared_ptr<Record>>::iterator it = std::find_if(records.begin(), records.end(), S_for_Goal(name, date, status));
+        if (it != records.end())
+        {
+            auto Go = std::dynamic_pointer_cast<Goal>(*it);
+            Go->set_status(Go->get_status() == 0 ? 1 : 0);
+            return true;
+        }
+    }
+    return false;
+}
+
+bool Student_dairy::ed_sched_item(int day, int sequence, std::string new_name)
 {
     if (!sub_records.empty())
     {
-        std::vector<std::shared_ptr<Subject>>::iterator it = std::find(sub_records.begin(), sub_records.end(), S_for_Sched(day, sequence));
-        if (it == sub_records.end())
+        std::vector<std::shared_ptr<Subject>>::iterator it = std::find_if(sub_records.begin(), sub_records.end(), S_for_Sched(day, sequence));
+        if (it != sub_records.end())
         {
-            if (auto Sch = std::dynamic_pointer_cast<Sched_path>(*it))
-            {
-                Sch->set_name(new_name);
-            }
-            else throw - 1;
+            auto Sch = std::dynamic_pointer_cast<Sched_path>(*it);
+            Sch->set_name(new_name);
+            return true;
         }
     }
+    return false;
 }
 
-void Student_dairy::ed_res_item(std::string name, int new_result)
+bool Student_dairy::ed_res_item(std::string name, int new_result)
 {
     if (!sub_records.empty())
     {
-        std::vector<std::shared_ptr<Subject>>::iterator it = std::find(sub_records.begin(), sub_records.end(), S_for_Res(name));
-        if (it == sub_records.end())
+        std::vector<std::shared_ptr<Subject>>::iterator it = std::find_if(sub_records.begin(), sub_records.end(), S_for_Res(name));
+        if (it != sub_records.end())
         {
-            if (auto Re = std::dynamic_pointer_cast<Res_path>(*it))
-            {
-                Re->set_score(new_result);
-            }
-            else throw - 1;
+            auto Re = std::dynamic_pointer_cast<Res_path>(*it);
+            Re->set_score(new_result);
+            return true;
         }
     }
+    return false;
 }
 
-
-
-void Student_dairy::full_clear()
+bool Student_dairy::sort_sub_container()
 {
-    /*if (!records.empty())
-        records.clear();
-    if (!results.empty())
-        results.clear();
-    if (!schedule.empty())
-        results.clear();*/
-
-    // Á‡˜ËÒÚËÚË Ù‡ÈÎË
+    if (!sub_records.empty())
+    {
+        std::sort(sub_records.begin(), sub_records.end(), So_for_sub_r());
+        return true;
+    }
+    return false;
 }
 
-bool Student_dairy::write_records_file() const
+bool Student_dairy::clear_sub_records()
+{
+    if (!sub_records.empty())
+    {
+        this->sub_records.clear();
+        return true;
+    }
+    return false;
+}
+
+bool Student_dairy::clear_records()
+{
+    if (!records.empty())
+    {
+        this->records.clear();
+        return true;
+    }
+    return false;
+}
+// «¿œ»— ƒŒ ‘¿…À”
+bool Student_dairy::write_to_file() const
 {
     std::ofstream ofs(Rec_file);
     if (!ofs)
-    {
-        std::cerr << "Error opening file for writing!" << std::endl;
-        throw - 1;
-    }
+        return false;
+
     if (!records.empty())
     {
         for (const auto& item : this->records)
         {
-            ofs << item->get_type() << '\n'; // —ÔÓ˜‡ÚÍÛ Á‡ÔËÒÛ∫ÏÓ ÚËÔ Ó·'∫ÍÚ‡
+            ofs << item->get_type() << '\n';
             item->introduction(ofs);
         }
     }
-
-    return true;
-}
-
-bool Student_dairy::write_schedule_file() const
-{
-    std::ofstream ofs(Sched_file);
-    if (!ofs)
+    if (!sub_records.empty())
     {
-        std::cerr << "Error opening file for writing!" << std::endl;
-        throw - 1;
-    }
-    if (!schedule.empty())
-    {
-        for (const auto& item : this->schedule)
+        for (const auto& item2 : this->sub_records)
         {
-            item.introduction(ofs);
+            ofs << item2->get_type() << '\n';
+            item2->introduction(ofs);
         }
     }
-
     return true;
 }
-
-bool Student_dairy::write_results_file() const
+// ¬»“ﬂ√”¬¿ÕÕﬂ « ‘¿…À”
+bool Student_dairy::execute_from_file()
 {
-    std::ofstream ofs(Res_file);
+    std::ifstream ofs(this->Rec_file);
     if (!ofs)
-    {
-        std::cerr << "Error opening file for writing!" << std::endl;
-        throw - 1;
-    }
-    if (!results.empty())
-    {
-        for (const auto& item : this->results)
-        {
-            item.introduction(ofs);
-        }
-    }
+        return false;
 
-    return true;
-}
-
-bool Student_dairy::execute_records_file()
-{
-    std::ifstream ifs_rec(this->Rec_file);
-    if (!ifs_rec)
-    {
-        std::cerr << "Error opening records file for writing!" << std::endl;
-        throw - 1;
-    }
+    this->clear_sub_records();
+    this->clear_records();
 
     std::string type;
-    while (std::getline(ifs_rec, type))
+    while (std::getline(ofs, type))
     {
         std::shared_ptr<Record> item1;
+        std::shared_ptr<Subject> item2;
+
         if (type == "note_t") { item1 = std::make_shared<Note>(); }
         else if (type == "goal_t") { item1 = std::make_shared<Goal>(); }
+        else if (type == "schedule_t") { item2 = std::make_shared<Sched_path>(); }
+        else if (type == "result_t") { item2 = std::make_shared<Res_path>(); }
 
-        if (item1)
+        if (type == "note_t" || type == "goal_t") 
         {
-            item1->extraction(ifs_rec);
+            item1->extraction(ofs);
             records.push_back(item1);
+        } else if (type == "schedule_t" || type == "result_t") 
+        {
+            item2->extraction(ofs);
+            sub_records.push_back(item2);
         }
     }
-
-    return true;
-}
-
-bool Student_dairy::execute_schedule_file()
-{
-    std::ifstream ifs_sched(this->Sched_file);
-    if (!ifs_sched)
-    {
-        std::cerr << "Error opening schedule file for writing!" << std::endl;
-        throw - 1;
-    }
-    while (ifs_sched)
-    {
-        Sched_path item2;
-        item2.extraction(ifs_sched);
-        schedule.push_back(item2);
-    }
-
-    return true;
-}
-
-bool Student_dairy::execute_results_file()
-{
-    std::ifstream ifs_res(this->Res_file);
-    if (!ifs_res)
-    {
-        std::cerr << "Error opening results file for writing!" << std::endl;
-        throw - 1;
-    }
-    while (ifs_res)
-    {
-        Res_path item3;
-        item3.extraction(ifs_res);
-        results.push_back(item3);
-    }
-
     return true;
 }

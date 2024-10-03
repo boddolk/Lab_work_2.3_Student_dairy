@@ -4,8 +4,6 @@
 class Note : public Record
 {
 protected:
-	// without arguments
-
 public:
 	Note();
 	Note(std::string name, std::string date, std::string info);
@@ -14,4 +12,3 @@ public:
 	void extraction(std::ifstream& ifs) override;
 	virtual void show_item() const override;
 };
-
