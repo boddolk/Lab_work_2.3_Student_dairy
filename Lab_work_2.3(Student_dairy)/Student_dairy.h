@@ -1,51 +1,43 @@
 #pragma once
 #include <vector>
-#include <deque>
-#include "Res_path.h"
-#include "Sched_path.h"
-#include "Goal.h"
-#include "Note.h"
-
+#include <algorithm>
+#include "functors.h"
 
 class Student_dairy
 {
 private:
-	std::string s_name;
-	std::string s_surname;
-	int course;
-	std::deque<std::unique_ptr<Subject>> sub_items;
-	std::deque<std::unique_ptr<Record>> records;
+	std::string Rec_file;
+	std::vector<std::shared_ptr<Subject>> sub_records;
+	std::vector<std::shared_ptr<Record>> records;
 public:
 	Student_dairy();
-	Student_dairy(std::string s_name, std::string s_surname, int course);
-	std::string get_sname() const { return this->s_name; }
-	std::string get_ssurname() const { return this->s_surname; }
-	int get_course() const { return this->course; }
-	
-
-	// методи згідно умови 
-	/*
-	* 
-	* 
-	*/
-
-	void add_record(std::unique_ptr<Record> item); // додає нотатку або ціль в "records"
-	void add_sub_item(std::unique_ptr<Subject > item); // додає предмет або результат в "sub_items"
-	
-	void rm_record(std::unique_ptr<Record> item); // видаляє нотатку або ціль з "records"
-	void rm_sub_item(std::unique_ptr<Subject > item); // видаляє предмет за назвою та днем з "sub_items"
-	
-	void ed_record(std::unique_ptr<Record> item); // редагує нотатку або ціль в "records" ???????????????????????????????????
-	void ed_sub_item(std::unique_ptr<Subject > item); // редагує предмет або бал в "sub_items"
-
-	void full_clear(); // очищує всі контейнери та файли
-
-
-
-
-	/*
-		Забезпечте можливість зчитування та запису даних у/з файлу(ів) з використанням потокових маніпуляцій.
-		Розгляньте використання маніпуляцій для форматування введення/виведення даних.
-	*/
+	Student_dairy(std::string Rec_file);
+	std::string get_res_name() const { return this->Rec_file; }
+	void set_file(std::string f_name) { this->Rec_file = f_name; };
+	// ВИВОДИ ПУНКТІВ
+	bool show_schedule(int day) const;
+	bool show_results() const;
+	bool show_notes() const;
+	bool show_goals() const;
+	// ДОДАВАННЯ ЗАПИСІВ В ОБИДВА КОНТЕЙНЕРИ
+	void add_record(std::shared_ptr<Record> item); // додає нотатку або ціль в "records"
+	void add_sub_record(std::shared_ptr<Subject> item);
+	//ВИДАЛЕННЯ ПЕВНИХ ЗАПИСІВ З КОНТЕЙНЕРІВ
+	bool rm_note(std::string name, std::string date);
+	bool rm_goal(std::string name, std::string date, int status);
+	bool rm_sched_item(int day, int sequence);
+	bool rm_res_item(std::string name);
+	// РЕДАГУВАННЯ ПЕВНИХ ПОЛІВ У КОНТЕЙНЕРАХ
+	bool ed_note(std::string name, std::string date, std::string new_info); // РЕДАГУЄ інформацію в нотатці
+	bool ed_goal(std::string name, std::string date, int status); // РЕДАГУЄ інформацію в цілі
+	bool ed_sched_item(int day, int sequence, std::string new_name); // РЕДАГУЄ назву предмету в розкладі
+	bool ed_res_item(std::string name, int new_result); // РЕДАГУЄ результат екзамену
+	// СОРТУВАННЯ
+	bool sort_sub_container();
+	// ОЧИЩЕННЯ
+	bool clear_sub_records();
+	bool clear_records();
+	// ЗАПИС ТА ВИТЯГУВАННЯ З ОДНОГО ФАЙЛУ
+	bool write_to_file() const;
+	bool execute_from_file();
 };
-

@@ -51,7 +51,7 @@
     <ClCompile Include="Student_dairy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="file_operate.cpp">
+    <ClCompile Include="menu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -77,7 +77,10 @@
     <ClInclude Include="Student_dairy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="file_operate.h">
+    <ClInclude Include="menu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="functors.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
